@@ -1,14 +1,16 @@
 # Explaining Vision GNNs: A Semantic and Visual Analysis
 
+![Vision GNN Explainer example, with heatmap graph visualization and per-layer metrics](figures/qual-figure.png "Vision GNN Explainer")
+
 This repository provides the official implementation for the paper:
 **"Explaining Vision GNNs: A Semantic and Visual Analysis of Graph-based Image Classification"**
-by Nikolaos Chaidos, Angeliki Dimitriou, Nikolaos Spanos, Athanasios Voulodimos, and Giorgos Stamou.
+by Nikolaos Chaidos, Angeliki Dimitriou, Nikolaos Spanos, Athanasios Voulodimos, and Giorgos Stamou. Presented at xAI World Conference 2025.
 
-*(Optional: Add a link to your published paper here, e.g., ArXiv, conference proceedings)*
+
+[[`Paper`](https://arxiv.org/abs/2504.19682)]
+
 
 This project enables the analysis of Vision Graph Neural Networks (GNNs) by extracting and visualizing key metrics that offer insights into their decision-making processes across different layers. It supports processing individual images and can optionally leverage GroundingDINO and Segment Anything (SAM) for object-centric modularity analysis.
-
-![Optional: Add a compelling figure from your paper here, e.g., a visualization example](figures/example_visualization.png)
 
 ## Features
 
@@ -24,11 +26,11 @@ This project enables the analysis of Vision Graph Neural Networks (GNNs) by extr
 
 ## Setup and Installation
 
-Follow these steps to set up the environment and download necessary models. It's recommended to use a virtual environment (e.g., conda or venv).
+Follow these steps to set up the environment and download necessary models. It's recommended to use a virtual environment (e.g., conda or venv). Our experiments were conducted on Python 3.11 with CUDA 12.4 on a single NVIDIA L40S.
 
 **1. Clone the Repository:**
 ```bash
-git clone [https://github.com/](https://github.com/)<your_username>/Vision-GNNs-Explainer.git # Replace with your repo URL
+git clone https://github.com/nickhaidos/Vision-GNNs-Explainer.git
 cd Vision-GNNs-Explainer
 ```
 
@@ -37,16 +39,7 @@ A `requirements.txt` file is provided.
 ```bash
 pip install -r requirements.txt
 ```
-This will install PyTorch, torchvision, timm, and other necessary packages.
-
-**3. Install Segment Anything (SAM):**
-```bash
-git clone [https://github.com/facebookresearch/segment-anything.git](https://github.com/facebookresearch/segment-anything.git)
-cd segment-anything
-pip install -e .
-cd ..
-```
-*Note: Ensure the import `from SAM.segment_anything import ...` in `main.py` matches your SAM installation structure. If you install SAM globally and it's available as `segment_anything`, you might need to adjust the import path in `main.py`.*
+Make sure `git` is already installed on your system.
 
 **4. Download Pre-trained Model Weights:**
 Create a `weights` directory and download the required model checkpoints.
@@ -55,17 +48,17 @@ mkdir weights
 cd weights
 
 # GroundingDINO Swin-T OGC model
-wget -q [https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth](https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth)
+wget -q https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth
 
 # SAM ViT-H checkpoint
-wget -q [https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth](https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth)
+wget -q https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 
 # ViG-Small model checkpoint (example from Efficient-AI-Backbones)
-wget -q [https://github.com/huawei-noah/Efficient-AI-Backbones/releases/download/vig/vig_s_80.6.pth](https://github.com/huawei-noah/Efficient-AI-Backbones/releases/download/vig/vig_s_80.6.pth)
+wget -q https://github.com/huawei-noah/Efficient-AI-Backbones/releases/download/vig/vig_s_80.6.pth
 
 cd ..
 ```
-You will also need the GroundingDINO configuration file. You can typically find this in the [GroundingDINO repository](https://github.com/IDEA-Research/GroundingDINO) (e.g., `groundingdino/config/GroundingDINO_SwinT_OGC.py`). Place it in a known location or alongside its weights.
+You will also need the GroundingDINO configuration file. You can typically find this in the [GroundingDINO repository](https://github.com/IDEA-Research/GroundingDINO) (`groundingdino/config/GroundingDINO_SwinT_OGC.py`). Place it in a known location or alongside its weights.
 
 ## Usage
 
@@ -105,29 +98,33 @@ python main.py \\
 
 ## Output
 
-The script saves the calculated metrics for each image as a JSON file in the specified output directory (e.g., `analysis_results/metrics_<image_stem>.json`). The JSON file has the following structure:
+The script saves the calculated metrics for each image as a JSON file in the specified output directory (e.g., `analysis_results/metrics_<image_name>.json`). The JSON file has the following structure:
 
 ```json
 {
-    "visual_similarity": [0.732, 0.698, /* ...16 values... */ 0.096],
-    "spatial_distance": [3.575, 3.091, /* ...16 values... */ 9.036],
-    "embedding_similarity": [0.944, 0.941, /* ...16 values... */ 0.923],
-    "layer_probabilities_gt": [3.8e-05, 4.7e-05, /* ...16 values... */ 0.623], // or null if gt_label_idx not provided
-    "layer_is_correct_gt": [false, false, /* ...16 values... */ true],     // or null if gt_label_idx not provided
-    "modularity": [0.353, 0.362, /* ...16 values... */ 0.132],           // or null if mask generation failed/skipped
-    "predicted_class_idx_final": 207,
+    "visual_similarity": [0.732, 0.698, ..., 0.096],
+    "spatial_distance": [3.575, 3.091, ..., 9.036],
+    "embedding_similarity": [0.944, 0.941, ..., 0.923],
+    "layer_probabilities_gt": [3.8e-05, 4.7e-05, ..., 0.623], // or null if gt_label_idx not provided
+    "layer_is_correct_gt": [false, false, ..., true],     // or null if gt_label_idx not provided
+    "modularity": [0.353, 0.362, ..., 0.132],           // or null if mask generation failed/skipped
+    "predicted_class_idx_final": 207,  // Imagenet class ID
     "predicted_class_name_final": "golden retriever" // or null if mapping not available
 }
 ```
-Each list under metric keys contains 16 floating-point values, corresponding to the 16 layers of the ViG model analyzed.
+Each list under metric keys contains floating-point values, corresponding to each layer of the ViG model analyzed.
+
+## Heatmap Visualization
+
+We also provide functions to visualize the graph connections throughout different layers of the model. Examples are included in `heatmap_visualization.ipynb` notebook
 
 ## Acknowledgements and Citations
 
-This work builds upon several outstanding research projects. We encourage you to cite their original papers if you use components from their work:
+This work builds upon several research projects. We encourage you to cite their original papers if you use components from their work:
 
 * **Vision GNN (ViG):**
-    * Han, K., Wang, Y., Guo, J., Tang, Y., & Wu, E. (2022). *Vision GNN: An Image is Worth Graph of Nodes.* In NeurIPS.
-    * *(TODO: Add link to the specific ViG paper/repository you based your `vig_2.py` on, or the original paper if applicable)*
+    * Han, K., Wang, Y., Guo, J., Tang, Y., & Wu, E. (2022). *Vision GNN: An Image is Worth Graph of Nodes.* arXiv preprint arXiv:2206.00272.
+    * Github: [https://github.com/huawei-noah/Efficient-AI-Backbones](https://github.com/huawei-noah/Efficient-AI-Backbones)
 
 * **GroundingDINO:**
     * Liu, S., Zeng, Z., Ren, T., Li, F., Zhang, H., Yang, J., ... & Su, H. (2023). *Grounding DINO: Marrying DINO with Grounded Pre-Training for Open-Set Object Detection.* arXiv preprint arXiv:2303.05499.
@@ -137,7 +134,6 @@ This work builds upon several outstanding research projects. We encourage you to
     * Kirillov, A., Mintun, E., Ravi, N., Mao, H., Rolland, C., Gustafson, L., ... & Girshick, R. (2023). *Segment Anything.* arXiv preprint arXiv:2304.02643.
     * GitHub: [https://github.com/facebookresearch/segment-anything](https://github.com/facebookresearch/segment-anything)
 
-*(TODO: Please ensure you add any other specific libraries or models you used and their respective citations.)*
 
 ## Citing Our Work
 
@@ -145,20 +141,18 @@ If you find this repository and our paper useful in your research, please consid
 
 ```bibtex
 @inproceedings{chaidos2024explaining,
-  title={Explaining {Vision GNNs}: {A} Semantic and Visual Analysis of Graph-based Image Classification},
+  title={Explaining Vision GNNs: A Semantic and Visual Analysis of Graph-based Image Classification},
   author={Chaidos, Nikolaos and Dimitriou, Angeliki and Spanos, Nikolaos and Voulodimos, Athanasios and Stamou, Giorgos},
-  booktitle={TODO: Add Conference/Journal Name}, % TODO: Update with your publication venue
-  year={2024}, % TODO: Update year if needed (e.g., if published in 2025)
-  pages={TODO: Add page numbers}, % TODO: Update pages if needed
+  booktitle={xAI World Conference},
+  year={2025},
   url={TODO: Add URL to paper (e.g., ArXiv, DOI)} % TODO: Add URL to paper
 }
 ```
 
 ## License
 
-This project is licensed under the [TODO: CHOOSE A LICENSE, e.g., MIT] License - see the `LICENSE` file for details.
-*(TODO: Choose a license, e.g., MIT, Apache 2.0, and add a LICENSE file to your repository.)*
+This repository contains code licensed under different terms, for details see `LICENSE` file.
 
 ## Contact
 
-For questions or issues, please contact Nikolaos Chaidos at `nchaidos@ails.ece.ntua.gr` or open an issue in this repository.
+For questions or issues, please contact us at `nchaidos@ails.ece.ntua.gr` or open an issue in this repository.
