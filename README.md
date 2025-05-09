@@ -145,7 +145,6 @@ If you find this repository and our paper useful in your research, please consid
   author={Chaidos, Nikolaos and Dimitriou, Angeliki and Spanos, Nikolaos and Voulodimos, Athanasios and Stamou, Giorgos},
   booktitle={xAI World Conference},
   year={2025},
-  url={TODO: Add URL to paper (e.g., ArXiv, DOI)} % TODO: Add URL to paper
 }
 ```
 
