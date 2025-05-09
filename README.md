@@ -41,7 +41,7 @@ pip install -r requirements.txt
 ```
 Make sure `git` is already installed on your system.
 
-**4. Download Pre-trained Model Weights:**
+**3. Download Pre-trained Model Weights:**
 Create a `weights` directory and download the required model checkpoints.
 ```bash
 mkdir weights
@@ -100,16 +100,16 @@ python main.py \\
 
 The script saves the calculated metrics for each image as a JSON file in the specified output directory (e.g., `analysis_results/metrics_<image_name>.json`). The JSON file has the following structure:
 
-```json
+```python
 {
     "visual_similarity": [0.732, 0.698, ..., 0.096],
     "spatial_distance": [3.575, 3.091, ..., 9.036],
     "embedding_similarity": [0.944, 0.941, ..., 0.923],
-    "layer_probabilities_gt": [3.8e-05, 4.7e-05, ..., 0.623], // or null if gt_label_idx not provided
-    "layer_is_correct_gt": [false, false, ..., true],     // or null if gt_label_idx not provided
-    "modularity": [0.353, 0.362, ..., 0.132],           // or null if mask generation failed/skipped
-    "predicted_class_idx_final": 207,  // Imagenet class ID
-    "predicted_class_name_final": "golden retriever" // or null if mapping not available
+    "layer_probabilities_gt": [3.8e-05, 4.7e-05, ..., 0.623],    # or null if gt_label_idx not provided
+    "layer_is_correct_gt": [False, False, ..., True],            # or null if gt_label_idx not provided
+    "modularity": [0.353, 0.362, ..., 0.132],                    # or null if mask generation failed/skipped
+    "predicted_class_idx_final": 207,                            # Imagenet class ID
+    "predicted_class_name_final": "golden retriever"             # or null if mapping not available
 }
 ```
 Each list under metric keys contains floating-point values, corresponding to each layer of the ViG model analyzed.
