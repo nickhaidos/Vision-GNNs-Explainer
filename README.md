@@ -140,7 +140,7 @@ This work builds upon several research projects. We encourage you to cite their 
 If you find this repository and our paper useful in your research, please consider citing:
 
 ```bibtex
-@inproceedings{chaidos2024explaining,
+@inproceedings{chaidos2024explainingvgnn,
   title={Explaining Vision GNNs: A Semantic and Visual Analysis of Graph-based Image Classification},
   author={Chaidos, Nikolaos and Dimitriou, Angeliki and Spanos, Nikolaos and Voulodimos, Athanasios and Stamou, Giorgos},
   booktitle={xAI World Conference},
