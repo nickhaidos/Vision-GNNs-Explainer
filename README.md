@@ -1,6 +1,6 @@
 # Explaining Vision GNNs: A Semantic and Visual Analysis
 
-![Vision GNN Explainer example, with heatmap graph visualization and per-layer metrics](figures/qual-figure.png "Vision GNN Explainer")
+![Vision GNN Explainer example, with heatmap graph visualization and per-layer metrics](figures/qual.png "Vision GNN Explainer")
 
 This repository provides the official implementation for the paper:
 **"Explaining Vision GNNs: A Semantic and Visual Analysis of Graph-based Image Classification"**
